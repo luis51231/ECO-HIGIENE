@@ -1,0 +1,78 @@
+CREATE DATABASE IF NOT EXISTS ecohigiene_db;
+USE ecohigiene_db;
+
+-- Eliminar tablas existentes para empezar desde cero
+DROP TABLE IF EXISTS ventas;
+DROP TABLE IF EXISTS contactos;
+DROP TABLE IF EXISTS comentarios;
+DROP TABLE IF EXISTS carrito;
+DROP TABLE IF EXISTS productos;
+DROP TABLE IF EXISTS clientes;
+
+-- Tabla de clientes
+CREATE TABLE clientes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    clave VARCHAR(255) NOT NULL
+);
+
+-- Tabla de productos (sin columna imagen)
+CREATE TABLE productos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    precio DECIMAL(10, 2) NOT NULL
+);
+
+-- Tabla de carrito
+CREATE TABLE carrito (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    cliente_id INT NOT NULL,
+    producto_id INT NOT NULL,
+    FOREIGN KEY (cliente_id) REFERENCES clientes(id),
+    FOREIGN KEY (producto_id) REFERENCES productos(id)
+);
+
+-- Tabla de comentarios
+CREATE TABLE comentarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    cliente_id INT NOT NULL,
+    producto_id INT NOT NULL,
+    comentario TEXT NOT NULL,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    visible BOOLEAN DEFAULT 1,
+    FOREIGN KEY (cliente_id) REFERENCES clientes(id),
+    FOREIGN KEY (producto_id) REFERENCES productos(id)
+);
+
+-- Tabla de contactos
+CREATE TABLE contactos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    mensaje TEXT NOT NULL,
+    fecha_envio TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabla de ventas
+CREATE TABLE ventas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    cliente_id INT NOT NULL,
+    producto_id INT NOT NULL,
+    precio DECIMAL(10, 2) NOT NULL,
+    fecha_venta TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (cliente_id) REFERENCES clientes(id),
+    FOREIGN KEY (producto_id) REFERENCES productos(id)
+);
+
+-- Insertar los seis productos (sin imagen)
+INSERT INTO productos (nombre, precio) VALUES
+('Gel Antibacterial', 5.99),
+('Labial Natural', 3.99),
+('Crema Corporal', 7.99),
+('Acetona Natural', 4.50),
+('Desmaquillante', 6.00),
+('Ungüento Medicinal', 8.50);
+
+-- Verificar los datos
+SELECT * FROM productos;
